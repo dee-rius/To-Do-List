@@ -10,19 +10,21 @@
     <div id="everything">
         <header>
             <h1>Makeshift to-do list.</h1>
-            <p>A simple not so good to-do list. Please do not quite browser or refresh the page. Trust me.</p>
-            <p>Once you add a task, hover over it or tap  on it to show details</p>
+            <p>A simple, not-so-good to-do list.</p>
+            <p>Do not refresh this page. Trust me.</p>
         </header>
         <main>
-            <p>Required fields are marked with <strong>*</strong></p>
+            <p>Note: required field(s) are marked with <strong>*</strong></p>
             <fieldset id="task-input-holder">
                 <legend>Task Details</legend>
-                <label id="task">Task: <input type="text"> <strong>*</strong></label>
-                <textarea id="user-description" placeholder="Add task description (optional)" cols="40" rows="8"></textarea></label>
-                <button id="confirm-button">Confirm</button>
+                <label>Task: <input type="text" id="task-input"> <strong>*</strong></label>
+                <textarea id="task-description-input" type="text" placeholder="Add task description (optional)" cols="40" rows="8"></textarea>
+                <button ty id="confirm-button">Confirm</button>
             </fieldset>
+
+            <section id="tasks-holder"></section>
         </main>
     </div>
-
+    <script src="to-do_list-Script.js"></script>
 </body>
 </html>
