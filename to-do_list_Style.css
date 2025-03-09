@@ -42,6 +42,10 @@ textarea{
     resize: vertical;
 }
 
+input[type="checkbox"], button{
+    cursor: pointer;
+}
+
 input[type="checkbox"]{
     accent-color: black;
 }
