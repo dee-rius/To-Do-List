@@ -5,13 +5,67 @@ const confirmButton = document.getElementById("confirm-button");
 
 confirmButton.addEventListener('click', createTask);
 
+let currentTasksArray = [];
+
+    let storedTasks = JSON.parse(localStorage.getItem("current-tasks"));
+    currentTasksArray = storedTasks;
+
+    for(let storedTask of storedTasks)
+    {
+       const taskContainer = document.createElement("section");
+       taskContainer.classList.add("task-container");
+       taskContainer.style.display = "flex";
+
+       const taskDetails = document.createElement("article");
+       taskDetails.style.wordBreak = "break-word";
+
+       const taskCompleteCheckbox = document.createElement("input");
+       taskCompleteCheckbox.type = "checkbox";
+
+       taskCompleteCheckbox.style.marginBottom = "auto";
+       
+       const task = document.createElement("p");
+       const taskDescription = document.createElement("p");
+
+
+       task.classList.add("task-details-text");
+       taskDescription.classList.add("task-details-text");
+
+       //set to saved task input value
+       task.textContent = storedTask.taskName;
+       //set to saved task dscription value
+       taskDescription.textContent = storedTask.taskDescriptionText;
+
+       const deleteTaskButton = document.createElement("button");
+
+       deleteTaskButton.style.marginBottom = "auto";
+       deleteTaskButton.classList.add("delete-task");
+       deleteTaskButton.innerHTML = "delete";
+
+       taskCompleteCheckbox.addEventListener('change', taskCompletion);
+       deleteTaskButton.addEventListener('click', playTaskExitAnim);
+
+       taskDetails.append(task, taskDescription);
+       taskContainer.append(taskCompleteCheckbox, taskDetails, deleteTaskButton);
+       allTasksHolder.appendChild(taskContainer);
+
+       taskContainer.classList.add("task-enter");
+    }
+
+
 
 function createTask()
 {
-    const inputtedTask = taskInput.value.trim();
+    let inputtedTask = taskInput.value.trim();
+    
 
     if(inputtedTask != "")
     {
+       let taskToStore = 
+       {
+        taskName: taskInput.value,
+        taskDescriptionText: taskDescriptionInput.value,
+       };
        const taskContainer = document.createElement("section");
        taskContainer.classList.add("task-container");
        taskContainer.style.display = "flex";
@@ -43,10 +97,16 @@ function createTask()
        taskCompleteCheckbox.addEventListener('change', taskCompletion);
        deleteTaskButton.addEventListener('click', playTaskExitAnim);
 
-       taskContainer.classList.add("task-enter");
        taskDetails.append(task, taskDescription);
        taskContainer.append(taskCompleteCheckbox, taskDetails, deleteTaskButton);
        allTasksHolder.appendChild(taskContainer);
+
+       taskContainer.classList.add("task-enter");
+
+
+       currentTasksArray.splice(currentTasksArray.length, 0, taskToStore);
+
+       localStorage.setItem('current-tasks', JSON.stringify(currentTasksArray));
     }
 }
 
@@ -66,6 +126,15 @@ function playTaskExitAnim()
             function deleteTask()
             {
                 taskContainer.remove();
+            }
+
+            for(let storedTask of storedTasks)
+            {
+                let taskDetails = taskContainer.getElementsByClassName("task-details-text");
+                if(storedTask.taskName == taskDetails[0] && storedTask.taskDescription == taskDetails[1] || storedTask.taskName == taskDetails[1] && storedTask.taskDescription == taskDetails[0])
+                {
+                    storedTasks.splice(storedTasks.findIndex(storedTask), 1);
+                }
             }
         }
     }
