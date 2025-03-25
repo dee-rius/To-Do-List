@@ -6,8 +6,10 @@ const confirmButton = document.getElementById("confirm-button");
 confirmButton.addEventListener('click', createTask);
 
 let currentTasksArray = [];
-
-    let storedTasks = JSON.parse(localStorage.getItem("current-tasks"));
+let storedTask = []
+if(localStorage.getItem("current-tasks") != null)
+{
+    storedTasks = JSON.parse(localStorage.getItem("current-tasks"));
     currentTasksArray = storedTasks;
 
     for(let storedTask of storedTasks)
@@ -34,7 +36,7 @@ let currentTasksArray = [];
        //set to saved task input value
        task.textContent = storedTask.taskName;
        //set to saved task dscription value
-       taskDescription.textContent = storedTask.taskDescriptionText;
+       taskDescription.textContent = storedTask.description;
 
        const deleteTaskButton = document.createElement("button");
 
@@ -51,6 +53,7 @@ let currentTasksArray = [];
 
        taskContainer.classList.add("task-enter");
     }
+}
 
 
 
@@ -64,7 +67,7 @@ function createTask()
        let taskToStore = 
        {
         taskName: taskInput.value,
-        taskDescriptionText: taskDescriptionInput.value,
+        description: taskDescriptionInput.value,
        };
        const taskContainer = document.createElement("section");
        taskContainer.classList.add("task-container");
@@ -105,6 +108,7 @@ function createTask()
 
 
        currentTasksArray.splice(currentTasksArray.length, 0, taskToStore);
+       
 
        localStorage.setItem('current-tasks', JSON.stringify(currentTasksArray));
     }
@@ -113,11 +117,14 @@ function createTask()
 function playTaskExitAnim()
 {
     const taskContainers = document.getElementsByClassName("task-container");
+    
 
     for(const taskContainer of taskContainers)
     {
         if(taskContainer.contains(this))
         {
+          const taskDetails = taskContainer.getElementsByClassName("task-details-text");
+          
             taskContainer.classList.remove("task-enter");
             taskContainer.classList.add("task-exit");
 
@@ -127,19 +134,26 @@ function playTaskExitAnim()
             {
                 taskContainer.remove();
             }
-
-            for(let storedTask of storedTasks)
+            
+            for(storedTask of storedTasks)
             {
-                let taskDetails = taskContainer.getElementsByClassName("task-details-text");
-                if(storedTask.taskName == taskDetails[0] && storedTask.taskDescription == taskDetails[1] || storedTask.taskName == taskDetails[1] && storedTask.taskDescription == taskDetails[0])
-                {
-                    storedTasks.splice(storedTasks.findIndex(storedTask), 1);
-                }
+              let storedTaskIndex = storedTasks.findIndex(storedTask => storedTask.taskName == taskDetails[0].textContent && storedTask.description == taskDetails[1].textContent);
+              
+              if(storedTask.taskName == taskDetails[0].textContent && storedTask.description == taskDetails[1].textContent)
+              {
+                storedTasks.splice(storedTaskIndex, 1);
+                console.log(storedTasks)
+                
+                localStorage.setItem('current-tasks', JSON.stringify(storedTasks));
+              }
+              else
+              {
+                console.log("...")
+              }
+            }
             }
         }
     }
-}
-    
 
 
 
