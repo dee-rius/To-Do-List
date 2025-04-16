@@ -6,7 +6,8 @@ const confirmButton = document.getElementById("confirm-button");
 confirmButton.addEventListener('click', createTask);
 
 let currentTasksArray = [];
-let storedTask = [];
+let storedTasks = [];
+
 if (localStorage.getItem("current-tasks") != null) {
     storedTasks = JSON.parse(localStorage.getItem("current-tasks"));
     currentTasksArray = storedTasks;
@@ -24,9 +25,17 @@ if (localStorage.getItem("current-tasks") != null) {
 
         taskCompleteCheckbox.style.marginBottom = "auto";
 
+        let taskIndex = storedTasks.indexOf(storedTask);
+
+        taskCompleteCheckbox.checked = storedTasks[taskIndex].taskComplete;
+
+        if(taskCompleteCheckbox.checked)
+        {
+            taskContainer.classList.add("task-complete");
+        }
+
         let task = document.createElement("p");
         let taskDescription = document.createElement("p");
-
 
         task.classList.add("task-details-text");
         taskDescription.classList.add("task-details-text");
@@ -64,6 +73,7 @@ function createTask() {
         {
             taskName: taskInput.value,
             description: taskDescriptionInput.value,
+            taskComplete: false,
         };
 
         let taskContainer = document.createElement("article");
@@ -103,8 +113,12 @@ function createTask() {
 
         taskContainer.classList.add("task-enter");
 
+        let taskToStoreAddedToArray = false; 
 
-        currentTasksArray.splice(currentTasksArray.length, 0, taskToStore);
+        if(taskToStoreAddedToArray == false){
+            currentTasksArray.splice(currentTasksArray.length, 0, taskToStore);
+            taskToStoreAddedToArray = true;
+        }
 
 
         localStorage.setItem('current-tasks', JSON.stringify(currentTasksArray));
@@ -131,6 +145,7 @@ function playTaskExitAnim() {
 
                 if (storedTask.taskName == taskDetails[0].textContent && storedTask.description == taskDetails[1].textContent && deletedOneTask == false)  {
                     storedTasks.splice(storedTaskIndex, 1);
+                    currentTasksArray.splice(currentTasksArray[storedTaskIndex], 1);
                     console.log(storedTasks);
 
                     localStorage.setItem('current-tasks', JSON.stringify(storedTasks));
@@ -153,20 +168,32 @@ function playTaskExitAnim() {
 
 
 function taskCompletion() {
-    let taskContainers = document.getElementsByClassName("task-container");
+    let taskContainers = Array.from(document.getElementsByClassName("task-container"));
+    const storedTasks = JSON.parse(localStorage.getItem('current-tasks'));
 
     if (this.checked) {
         for (let taskContainer of taskContainers) {
             if (taskContainer.contains(this)) {
+                //findes the position of the task in the list of tasks
+                let taskIndex = taskContainers.indexOf(taskContainer);
+
                 taskContainer.classList.add("task-complete");
+
+                storedTasks[taskIndex].taskComplete = true;
             }
         }
     }
     else {
-        for (let taskContainer of taskContainers) {
+        for (let taskContainer of taskContainers){
             if (taskContainer.contains(this)) {
+                let taskIndex = taskContainers.indexOf(taskContainer);
+
                 taskContainer.classList.remove("task-complete");
+
+                storedTasks[taskIndex].taskComplete = false; 
             }
         }
     }
+
+    localStorage.setItem('current-tasks', JSON.stringify(storedTasks))
 }

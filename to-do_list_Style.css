@@ -20,6 +20,16 @@
     }
 }
 
+::selection{
+    background-color: black;
+    color: white;
+}
+
+::-moz-selection{
+    background-color: black;
+    color: white;
+}
+
 main,#tasks-holder{
     display: flex;
     flex-direction: column;
